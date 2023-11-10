@@ -2,7 +2,7 @@ create database quanlynhanghi
 use quanlynhanghi
 create table HANG
 (
-	MaHang varchar(5) primary key,
+	MaHang varchar(10) primary key,
 	TenHang nvarchar(50) not null,
 	SoLuong int,
 	DonViTinh nvarchar(20),
@@ -14,7 +14,7 @@ create table KHACHHANG
 	Ma_KH varchar(13) primary key,
 	Ten_KH nvarchar(50) not null,
 	DiaChi_KH nvarchar(100),
-	STK_KH varchar(15)
+	STK_KH varchar(15) unique
 )
 create table PHONG
 (
@@ -28,17 +28,16 @@ create table NHANVIEN
 (
 	MaNV varchar(10) primary key,
 	HoTen nvarchar(60),
-	SDT varchar(10),
+	SDT varchar(10) unique,
 	ChucVu nvarchar(20)
 )
 create table HOADONBAN
 (
-	MaHDBan varchar(5) primary key,
+	MaHDBan varchar(10) primary key,
 	Ma_KH varchar(13),
 	MaPhong varchar(10),
 	ThoiGianDen datetime,
 	ThoiGianDi datetime,
-	ThoiGianO float,
 	DonViTinh nvarchar(10),
 	TienPhong int,
 	TienHang int,
@@ -51,8 +50,8 @@ create table HOADONBAN
 go
 create table HDBANCHITIET 
 (
-	MaHDBan varchar(5),
-	MaHang varchar(5),
+	MaHDBan varchar(10),
+	MaHang varchar(10),
 	SoLuong int,
 	DonViTinh nvarchar(10),
 	DonGia int,
@@ -63,7 +62,7 @@ create table HDBANCHITIET
 go
 create table HOADONNHAP
 (
-	MaHDNhap varchar(5) primary key,
+	MaHDNhap varchar(10) primary key,
 	ThoiGian datetime,
 	TongCong int,
 	MaNV varchar(10),
@@ -72,8 +71,8 @@ create table HOADONNHAP
 go
 create table HDNHAPCHITIET
 (	
-	MaHDNhap varchar(5),
-	MaHang varchar(5),
+	MaHDNhap varchar(10),
+	MaHang varchar(10),
 	SoLuongLe int,
 	DonVi nvarchar(10),
 	SoLuongSi int,
