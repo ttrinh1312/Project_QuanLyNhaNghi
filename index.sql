@@ -1,0 +1,24 @@
+------KHACHHANG
+create nonclustered index idx_KH on  KHACHHANG(MA_KH)
+select* from KHACHHANG  WITH(INDEX(IDX_KH)) WHERE 
+MA_KH='KH007'
+SELECT * FROM KHACHHANG WHERE MA_KH='KH007'
+
+------HDNHAPCHITIET
+ create nonclustered index idx_NH on  HDNHAPCHITIET(MaHDNHAP,Mahang)
+select* from HDNHAPCHITIET WITH(INDEX(IDX_NH)) WHERE MaHDNHAP='HDN001'and Mahang='HH001'
+
+SELECT * FROM HDNHAPCHITIET WHERE MaHDNHAp='HDN001'and 
+Mahang='HH001'
+drop index idx_NH on  HDNHAPCHITIET
+-----HDBANCHITIET
+
+create nonclustered index idx_bh on  HDBANCHITIET(MaHDBan)
+select* from HDBANCHITIET WITH(INDEX(IDX_bh)) WHERE MaHDBan='HDB001'
+
+SELECT * FROM HDBANCHITIET WHERE MaHDBan ='HDB001'
+-----HOADONBAN
+create nonclustered index idx_b on  HOADONBAN(MaHDBan)
+select* from HOADONBAN WITH(INDEX(IDX_b)) WHERE MaHDBan='HDB001'
+
+SELECT * FROM HOADONBAN WHERE MaHDBan ='HDB001'
