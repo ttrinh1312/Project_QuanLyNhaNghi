@@ -1,110 +1,25 @@
-﻿create database quanlynhanghi
-use quanlynhanghi
-create table HANG
-(
-	MaHang varchar(10) primary key,
-	TenHang nvarchar(50) not null,
-	SoLuong int,
-	DonViTinh nvarchar(20),
-	GiaNhap int,
-	GiaBan int
-)
-create table KHACHHANG 
-(
-	Ma_KH varchar(13) primary key,
-	Ten_KH nvarchar(50) not null,
-	DiaChi_KH nvarchar(100),
-	STK_KH varchar(15) unique
-)
-create table PHONG
-(
-	MaPhong varchar(10) primary key,
-	LoaiPhong nvarchar(50),
-	TinhTrangPhong nvarchar(15),
-	DGTheoGio int,
-	DGTheoNgay int
-)
-create table NHANVIEN
-(
-	MaNV varchar(10) primary key,
-	HoTen nvarchar(60),
-	SDT varchar(10) unique,
-	ChucVu nvarchar(20)
-)
-create table HOADONBAN
-(
-	MaHDBan varchar(10) primary key,
-	Ma_KH varchar(13),
-	MaPhong varchar(10),
-	ThoiGianDen datetime,
-	ThoiGianDi datetime,
-	DonViTinh nvarchar(10),
-	TienPhong int,
-	TienHang int,
-	TongCong int,
-	MaNV varchar(10)
-	constraint fk_makh foreign key (Ma_KH) references KHACHHANG(Ma_KH),
-	constraint fk_maphong foreign key(MaPhong) references PHONG(MaPhong),
-	constraint fk_manv foreign key (MaNV) references NHANVIEN(MaNV)
-)
-go
-create table HDBANCHITIET 
-(
-	MaHDBan varchar(10),
-	MaHang varchar(10),
-	SoLuong int,
-	DonViTinh nvarchar(10),
-	DonGia int,
-	ThanhTien int,
-	constraint fk_mahd foreign key (MaHDBAN) references HOADONBAN(MaHDBAN),
-	constraint fk_mahang foreign key (MaHang) references HANG(MaHang)
-)
-go
-create table HOADONNHAP
-(
-	MaHDNhap varchar(10) primary key,
-	ThoiGian datetime,
-	TongCong int,
-	MaNV varchar(10),
-	constraint fk_manv_nhap foreign key (MaNV) references NHANVIEN(MaNV)
-)
-go
-create table HDNHAPCHITIET
-(	
-	MaHDNhap varchar(10),
-	MaHang varchar(10),
-	SoLuongLe int,
-	DonVi nvarchar(10),
-	SoLuongSi int,
-	DonViTinh nvarchar(10),
-	DonGiaSi int,
-	ThanhTien int,
-	constraint fk_mahdnhap foreign key (MaHDNHAP) references HOADONNHAP(MaHDNHAP),
-	constraint fk_mahang_nhap foreign key (MaHang) references HANG(MaHang)
-)
-
 insert into HANG 
-values ('HH01',N'Nước suối',27,N'chai',4000,10000),
-('HH02', N'Coca cola', 25, N'chai', 10000, 15000),
-('HH03', N'Pepsi', 29, N'chai', 8000, 15000),
-('HH04', N'Không độ', 29, N'chai', 9000, 15000),
-('HH05', N'Sting', 12, N'chai', 9000, 15000),
-('HH06', N'Trà Túi Lọc Phúc Long', 21, N'gói', 1000, 5000),
-('HH07', N'Cà phê gói NESCAFÉ', 22, N'gói', 3000, 5000),
-('HH08', N'Bia tiger', 32, N'lon', 18000, 23000),
-('HH09', N'Bánh snack Oishi', 18, N'gói', 3000, 5000),
-('HH10', N'Thuốc lá', 5, N'hộp', 20000, 30000),
-('HH11', N'Sữa tắm Dove', 20, N'chai', 60000, NULL),
-('HH12', N'Dầu gội', 20, N'chai', 75000, NULL),
-('HH13', N'Quẹt ga', 5, N'cái', 3000, NULL),
-('HH14', N'Giấy vệ sinh', 50, N'cuộn', 8000, NULL),
-('HH15', N'Bộ chăn ga', 10, N'bộ', 210000, NULL),
-('HH16', N'Khăn tắm', 30, N'cái', 30000, NULL),
-('HH17', N'Kem đánh răng', 20, N'cái', 38000, NULL),
-('HH18', N'Bàn chải đánh răng', 20, N'cái', 10000, NULL),
-('HH19', N'Lược', 20, N'cái', 10000, NULL),
-('HH20', N'Dép', 10, N'đôi', 20000, NULL),
-('HH21', N'Cốc thuỷ tinh', 50, N'cái', 12000, NULL)
+values ('HH01',N'Nước suối',27, N'chai', 10000),
+('HH02', N'Coca cola', 25, N'chai', 15000),
+('HH03', N'Pepsi', 29, N'chai', 15000),
+('HH04', N'Không độ', 29, N'chai', 15000),
+('HH05', N'Sting', 12, N'chai', 15000),
+('HH06', N'Trà Túi Lọc Phúc Long', 21, N'gói', 5000),
+('HH07', N'Cà phê gói NESCAFÉ', 22, N'gói', 5000),
+('HH08', N'Bia tiger', 32, N'lon', 23000),
+('HH09', N'Bánh snack Oishi', 18, N'gói', 5000),
+('HH10', N'Thuốc lá', 5, N'hộp', 30000),
+('HH11', N'Sữa tắm Dove', 20, N'chai', NULL),
+('HH12', N'Dầu gội', 20, N'chai', NULL),
+('HH13', N'Quẹt ga', 5, N'cái', NULL),
+('HH14', N'Giấy vệ sinh', 50, N'cuộn', NULL),
+('HH15', N'Bộ chăn ga', 10, N'bộ', NULL),
+('HH16', N'Khăn tắm', 30, N'cái', NULL),
+('HH17', N'Kem đánh răng', 20, N'cái', NULL),
+('HH18', N'Bàn chải đánh răng', 20, N'cái', NULL),
+('HH19', N'Lược', 20, N'cái', NULL),
+('HH20', N'Dép', 10, N'đôi', NULL),
+('HH21', N'Cốc thuỷ tinh', 50, N'cái', NULL)
 
 insert into KHACHHANG 
 values ('KH001',N'Nguyễn Văn Hùng',N'123 Đường Hoàng Văn Thụ, Hà Nội', '1022287345763'),
@@ -138,14 +53,7 @@ values ('KH001',N'Nguyễn Văn Hùng',N'123 Đường Hoàng Văn Thụ, Hà N�
 ('KH029', N'Nguyễn Đình Anh Tuấn', N'999 Đường Hoàng Văn Thụ, Hà Nội', '1727638013288'),
 ('KH030', N'Phạm Ngọc Thanh Thảo', N'123 Đường Lê Lai, Biên Hòa', '1181749286899')
 
-create table PHONG
-(
-	MaPhong varchar(10) primary key,
-	LoaiPhong nvarchar(50),
-	TinhTrangPhong nvarchar(15),
-	DGTheoGio int,
-	DGTheoNgay int
-)
+
 insert into PHONG 
 values ('A101',N'Đơn',N'Đang ở',120000,350000),
 ('A102', N'Đơn', N'Đang ở', 120000, 350000),
@@ -296,19 +204,6 @@ values ('HDN001','2023-01-20 07:35:19', 935000,'NV01'),
   ('HDN009', '2023-04-30 19:45:28', 1565000, 'NV02'),
   ('HDN010', '2023-05-03 14:20:11', 660000, 'NV01')
 
-  create table HDNHAPCHITIET
-(	
-	MaHDNhap varchar(10),
-	MaHang varchar(10),
-	SoLuongLe int,
-	DonVi nvarchar(10),
-	SoLuongSi int,
-	DonViTinh nvarchar(10),
-	DonGiaSi int,
-	ThanhTien int,
-	constraint fk_mahdnhap foreign key (MaHDNHAP) references HOADONNHAP(MaHDNHAP),
-	constraint fk_mahang_nhap foreign key (MaHang) references HANG(MaHang)
-)
 
 insert into HDNHAPCHITIET 
 values 
@@ -321,7 +216,7 @@ values
   ('HDN002', 'HH07', 20, N'gói', 1, N'hộp', 60000, 60000),
   ('HDN002', 'HH08', 24, N'lon', 1, N'thùng', 432000, 432000),
   ('HDN002', 'HH09', 32, N'gói', 4, N'cây', 24000, 96000),
-  ('HDN002', 'HH10', 5, N'hộp', 5, N'lốc', 200000, 1000000),
+  ('HDN002', 'HH10', 50, N'hộp', 5, N'lốc', 200000, 1000000),
   ('HDN003', 'HH11', 15, N'chai', 15, N'chai', 60000, 900000),
   ('HDN003', 'HH12', 20, N'chai', 20, N'chai', 75000, 1500000),
   ('HDN003', 'HH13', 5, N'cái', 5, N'cái', 3000, 15000),
@@ -341,11 +236,11 @@ values
   ('HDN007', 'HH03', 24, N'chai', 1, N'thùng', 192000, 192000),
   ('HDN008', 'HH08', 24, N'lon', 1, N'thùng', 432000, 432000),
   ('HDN008', 'HH09', 16, N'gói', 2, N'cây', 24000, 48000),
-  ('HDN008', 'HH10', 3, N'hộp', 3, N'lốc', 200000, 600000),
+  ('HDN008', 'HH10', 30, N'hộp', 3, N'lốc', 200000, 600000),
   ('HDN008', 'HH01', 48, N'chai', 2, N'thùng', 96000, 192000),
   ('HDN009', 'HH04', 24, N'chai', 1, N'thùng', 215000, 215000),
   ('HDN009', 'HH15', 5, N'bộ', 5, N'bộ', 210000, 1050000),
   ('HDN009', 'HH16', 10, N'cái', 10, N'cái', 30000, 300000),
   ('HDN010', 'HH07', 20, N'gói', 1, N'hộp', 60000, 60000),
   ('HDN010', 'HH11', 5, N'chai', 5, N'chai', 60000, 300000),
-  ('HDN010', 'HH10', 3, N'hộp', 3, N'lốc', 200000, 600000)
+  ('HDN010', 'HH10', 30, N'hộp', 3, N'lốc', 200000, 600000)
