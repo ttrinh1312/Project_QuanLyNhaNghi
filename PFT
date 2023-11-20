@@ -1,0 +1,190 @@
+--1 HANG 
+--tao ma hang moi
+create or alter function fMaHang()
+returns varchar(4) 
+as
+begin
+	declare @mahang varchar(4), @ma int
+	set @ma = (select max(right(MaHang,2))+1 from Hang)
+    set @mahang = 'HH'+cast(@ma as varchar(2))
+    return  @mahang
+end
+
+select dbo.fMahang()
+
+--Insert dữ liệu vào bảng hàng biết Tên hàng, ĐVTính, Giá bán
+create or alter proc spHang(@Ten nvarchar(50), @DonViTinh nvarchar(20),@GiaBan int, @ret bit out)
+as
+begin
+	declare @ma varchar(5) = (select dbo.fMaHang())
+	insert into HANG
+	values (@ma, @Ten,0, @DonViTinh, @GiaBan)
+	set @ret=1 --nhap thanh cong
+end
+
+
+--test
+select * from HANG
+declare @Ten nvarchar(50)='Viet',
+	@DVT nvarchar(20)='hop',
+	@GiaBan int = 20000,
+	@ret bit
+exec spHang @Ten, @DVT, @GiaBan, @ret out
+print @ret
+
+--2. PHONG _Nhập tay
+
+--3. NHANVIEN
+-- Mã nhân viên mới
+create or alter function fMaNhanVien()
+returns varchar(4) 
+as
+begin
+	declare @manhanvien varchar(4), @ma numeric(2,0)
+	set @ma = (select max(right(MaNV,2))+1 from NhanVien)
+    set @manhanvien = 'NV'+replicate('0',2-len(@ma))+cast(@ma as varchar(2))
+    return @manhanvien
+end
+
+select dbo.fMaNhanVien()
+drop proc spNhanVien
+
+-- Insert dữ liệu nhân viên biêt Tên NV, SDT, Chức vụ
+create proc spNhanVien(@Ten nvarchar(50), @SDT varchar(11), @ChucVu nvarchar(20), @ret bit out)
+as
+begin
+	declare @ma varchar(10) = (select dbo.fMaNhanVien())
+	insert into NHANVIEN
+	values (@ma, @Ten, @SDT, @ChucVu)
+	set @ret=1 --nhap thanh cong
+end
+
+--test
+select * from NHANVIEN
+declare @Ten nvarchar(50)='Viet',
+	@SDT varchar(11)='0102838294',
+	@ChucVu nvarchar(20)='nhanvien',
+	@ret bit
+exec spNhanVien @Ten, @SDT, @ChucVu, @ret out
+print @ret
+
+
+--4. KHACHHANG
+-- Tạo mã khách hàng mới
+create or alter function fMaKhachHang()
+returns varchar(5) 
+as
+begin
+	declare @makhachhang varchar(5), @ma int
+	set @ma = (select max(right(Ma_KH,2))+1 from KhachHang)
+    set @makhachhang = 'KH'+replicate('0',3-len(@ma))+cast(@ma as varchar(3))
+    return @makhachhang
+end
+
+select dbo.fMaKhachHang()
+
+
+--tao proc nhap du lieu Khách hàng biết TênKH, Địa chỉ, STK
+create proc spKhachHang(@Ten nvarchar(50), @DiaChi nvarchar(50), @stk varchar(20), @ret bit out)
+as
+begin
+	declare @ma varchar(10) = (select dbo.fMaKhachHang())
+	insert into KHACHHANG
+	values (@ma, @Ten, @DiaChi, @stk)
+	set @ret=1 --nhap thanh cong
+end
+
+--test
+select * from KHACHHANG
+declare @Ten nvarchar(50)='Viet',
+	@DiaChi nvarchar(50)='abc',
+	@stk varchar(20)='1111',
+	@ret bit
+exec spKhachHang @Ten, @DiaChi, @stk, @ret out
+print @ret
+
+
+---tao trigger nhap va ban hang
+
+--Khi bán hàng thì trừ vào số lượng trong hàng
+create or alter trigger tBan
+on HDBANCHITIET 
+instead of insert
+as
+begin
+	declare @maHang varchar(5), @soluong int
+	select @maHang = MaHang, @soluong = SoLuong from inserted
+	if @soluong <= (select SoLuong from Hang where MaHang = @maHang)
+	begin
+		insert into HDBANCHITIET
+		select*from inserted
+
+		update Hang
+		set SoLuong = SoLuong - @soluong
+		where MaHang = @maHang
+	end
+	else
+	begin
+		print 'Het hang'
+	end
+end
+
+insert into HDBANCHITIET values ('HDB037','HH01',5,'hop',100,5*100)
+select * from HOADONBAN
+
+delete from HDBANCHITIET where MaHDBan = 'HDB037'
+drop trigger tBan
+
+---Khi nhập hàng thì cộng số lượng vào hàng
+create or alter trigger tNhap
+on HDNHAPCHITIET 
+instead of insert
+as
+begin
+	declare @maHang varchar(5), @soluong int
+	select @maHang = MaHang, @soluong = SoLuongLe from inserted
+	if exists (select 1 from HANG where MaHang = @maHang)
+	begin
+		insert into HDNHAPCHITIET
+		select*from inserted
+
+		update Hang
+		set SoLuong = SoLuong + @soluong
+		where MaHang = @maHang
+	end
+	else
+	begin
+		print 'Chua ton tai'
+		ROLLBACK
+	end
+end
+
+
+insert into HDNHAPCHITIET values ('HDN010','HH30',3,'hop',1,'day',100,1*100)
+select * from HANG
+
+create or alter trigger tNhap
+on HDNHAPCHITIET 
+instead of insert
+as
+begin
+	declare @maHang varchar(5) = (select dbo.fMaHang())
+	
+end
+
+CREATE UNIQUE INDEX idx_STK
+ON KHACHHANG(STK_KH);
+
+SELECT *
+FROM KHACHHANG WITH(INDEX(idx_STK_KH))
+WHERE STK_KH = '1022287345763'
+
+-- Xem thông tin chi tiết về chỉ mục 'idx_DonViTinh_GiaBan' trên bảng 'HANG'
+SELECT 
+    OBJECT_NAME(object_id) AS KHACHHANG,
+    KHACHHANG AS idx_STK_KH,
+    index_id,
+    COL_NAME(object_id, STK_KH) AS ColumnName
+FROM sys.index_columns
+--WHERE object_id = OBJECT_ID('HANG')
+--    AND index_id = OBJECT_ID('idx_DonViTinh_GiaBan');
