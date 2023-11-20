@@ -1,14 +1,15 @@
-create database quanlynhanghi
-use quanlynhanghi
+create database QuanLyNhaNghi
+use QuanLyNhaNghi
+
 create table HANG
 (
 	MaHang varchar(10) primary key,
 	TenHang nvarchar(50) not null,
 	SoLuong int,
 	DonViTinh nvarchar(20),
-	GiaNhap int,
 	GiaBan int
 )
+
 create table KHACHHANG 
 (
 	Ma_KH varchar(13) primary key,
@@ -16,6 +17,7 @@ create table KHACHHANG
 	DiaChi_KH nvarchar(100),
 	STK_KH varchar(15) unique
 )
+	
 create table PHONG
 (
 	MaPhong varchar(10) primary key,
