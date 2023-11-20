@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -177,33 +177,62 @@ namespace qlnn
         private void button5_Click(object sender, EventArgs e)
         {
             listView2.Items.Clear();
+            string searchText1 = txtmaphong.Text;
+            string searchText2 = txttinhtrangphong.Text;
+            string searchText3 = txtloaiphong.Text;
+            string searchText4 = txtdongiatheogio.Text;
+            string searchText5 = txtdongiatheongay.Text;// Fix the column name here
+
+            if (!string.IsNullOrEmpty(searchText1) && !string.IsNullOrEmpty(searchText2))
+            {
+                sql = @"select * from Phong where maphong = N'" + txtmaphong.Text + @"' and tinhtrangphong = N'" + txttinhtrangphong.Text + @"' "; // Add the missing operator (=)
+            }
+            else if (!string.IsNullOrEmpty(searchText1))
+            {
+                sql = @"select * from Phong where maphong = N'" + txtmaphong.Text + @"' ";
+            }
+            else if (!string.IsNullOrEmpty(searchText2))
+            {
+                sql = @"select * from Phong where tinhtrangphong = N'" + txttinhtrangphong.Text + @"' ";
+            }
+            else if (!string.IsNullOrEmpty(searchText3))
+            {
+                sql = @"select * from Phong where loaiphong = N'" + txtloaiphong.Text + @"' ";
+            }
+            else if (!string.IsNullOrEmpty(searchText4))
+            {
+                sql = @"select * from Phong where dgtheogio = N'" + txtdongiatheogio.Text + @"' ";
+            }
+            else if (!string.IsNullOrEmpty(searchText5))
+            {
+                sql = @"select * from Phong where dgtheongay = N'" + txtdongiatheongay.Text + @"' ";
+            }
+            else
+            {
+                // Hiển thị thông báo nếu không có giá trị nào được nhập vào
+                MessageBox.Show("Vui lòng nhập vào ít nhất một giá trị để tìm kiếm!");
+                return; // Add a return statement to avoid executing the query if no values are entered
+            }
+            // Execute the query to get search results
             ketnoi.Open();
-
-            // Build the dynamic SELECT query based on the entered text box values
-            sql = @"select * from Phong 
-            where "; // Using 1=1 to simplify adding AND conditions
-
-            // Add conditions only if the text box is not empty
-            if (!string.IsNullOrEmpty(txtmaphong.Text))
-                sql += "maphong = N'" + txtmaphong.Text + "' ";
-
-            if (!string.IsNullOrEmpty(txtloaiphong.Text))
-                sql += "and loaiphong = N'" + txtloaiphong.Text + "' ";
-
-            if (!string.IsNullOrEmpty(txttinhtrangphong.Text))
-                sql += "and tinhtrangphong = N'" + txttinhtrangphong.Text + "' ";
-
-            if (!string.IsNullOrEmpty(txtdongiatheogio.Text))
-                sql += "and dgtheogio = N'" + txtdongiatheogio.Text + "' ";
-
-            if (!string.IsNullOrEmpty(txtdongiatheongay.Text))
-                sql += "and dgtheongay = N'" + txtdongiatheongay.Text + "' ";
-
             thuchien = new SqlCommand(sql, ketnoi);
-            thuchien.ExecuteNonQuery();
+            docdulieu = thuchien.ExecuteReader();
+
+            i = 0;
+
+            while (docdulieu.Read())
+            {
+                listView2.Items.Add(docdulieu[0].ToString());
+                listView2.Items[i].SubItems.Add(docdulieu[1].ToString());
+                listView2.Items[i].SubItems.Add(docdulieu[2].ToString());
+                listView2.Items[i].SubItems.Add(docdulieu[3].ToString());
+                listView2.Items[i].SubItems.Add(docdulieu[4].ToString());
+                i++;
+            }
+
             ketnoi.Close();
-            hienthi();
         }
+
 
         private void button4_Click(object sender, EventArgs e)
         {
