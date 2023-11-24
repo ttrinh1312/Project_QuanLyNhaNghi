@@ -188,3 +188,304 @@ SELECT
 FROM sys.index_columns
 --WHERE object_id = OBJECT_ID('HANG')
 --    AND index_id = OBJECT_ID('idx_DonViTinh_GiaBan');
+
+--Tạo mã hóa đơn nhập mới
+create or alter function fnNewMaMoiHDN()
+returns varchar(10)
+as
+begin
+	declare @MaMoi char(10)
+	set @MaMoi = (select max(cast(right(MaHDNhap,3) as int)) + 1 from HOADONNHAP)
+	set @MaMoi = cast((REPLICATE('0',3 - len(@MaMoi)) + @MaMoi) as varchar)
+	return 'HDN'+ @MaMoi
+end
+
+print dbo.fnNewMaMoiHDN()
+
+-Tạo mã hàng mới
+create or alter function fMaHang()
+returns varchar(4) 
+as
+begin
+	declare @mahang varchar(4), @ma int
+	set @ma = (select max(right(MaHang,2))+1 from Hang)
+    set @mahang = 'HH'+cast(@ma as varchar(2))
+    return  @mahang
+end
+
+select dbo.fMahang()
+
+--Tạo function trả về số lượng lẻ của hàng hóa
+create or alter function fnSLLe(@MaHH varchar(4), @SLSi int)
+returns int
+as
+begin
+	set @MaHH = (select MaHang from HANG where MaHang = @MaHH)
+	declare @SLLe int
+	--Nước suối
+	if @MaHH = 'HH01'
+	begin
+		set @SLLe = @SLSi*24
+	end
+	--Coca
+	else if @MaHH = 'HH02'
+	begin
+		set @SLLe = @SLSi*24
+	end
+	--Pepsi
+	else if @MaHH = 'HH03'
+	begin
+		set @SLLe = @SLSi*24
+	end
+	--Không độ
+	else if @MaHH = 'HH04'
+	begin
+		set @SLLe = @SLSi*24
+	end
+	--Sting
+	else if @MaHH = 'HH05'
+	begin
+		set @SLLe = @SLSi*24
+	end
+	--Trà túi lọc Phúc Long
+	else if @MaHH = 'HH06'
+	begin
+		set @SLLe = @SLSi*25
+	end
+	--Cà phê gói NESCAFÉ
+	else if @MaHH = 'HH07'
+	begin
+		set @SLLe = @SLSi*20
+	end
+	--Bia Tiger
+	else if @MaHH = 'HH08'
+	begin
+		set @SLLe = @SLSi*24
+	end
+	--Bánh snack Oishi
+	else if @MaHH = 'HH09'
+	begin
+		set @SLLe = @SLSi*8
+	end
+	--Thuốc lá
+	else if @MaHH = 'HH10'
+	begin
+		set @SLLe = @SLSi*10
+	end
+	--Sữa tắm Dove
+	else if @MaHH = 'HH11'
+	begin
+		set @SLLe = @SLSi*1
+	end
+	--Dầu gội
+	else if @MaHH = 'HH12'
+	begin
+		set @SLLe = @SLSi*1
+	end
+	--Quẹt ga
+	else if @MaHH = 'HH13'
+	begin
+		set @SLLe = @SLSi*1
+	end
+	--Giấy vệ sinh
+	else if @MaHH = 'HH14'
+	begin
+		set @SLLe = @SLSi*10
+	end
+	--Bộ chăn ga
+	else if @MaHH = 'HH15'
+	begin
+		set @SLLe = @SLSi*1
+	end
+	--Khăn tắm
+	else if @MaHH = 'HH16'
+	begin
+		set @SLLe = @SLSi*1
+	end
+	--Kem đánh răng
+	else if @MaHH = 'HH17'
+	begin
+		set @SLLe = @SLSi*1
+	end
+	--Bàn chải đánh răng
+	else if @MaHH = 'HH18'
+	begin
+		set @SLLe = @SLSi*1
+	end
+	--Lược
+	else if @MaHH = 'HH19'
+	begin
+		set @SLLe = @SLSi*1
+	end
+	--Dép
+	else if @MaHH = 'HH20'
+	begin
+		set @SLLe = @SLSi*1
+	end
+	--Cốc thủy tinh
+	else if @MaHH = 'HH21'
+	begin
+		set @SLLe = @SLSi*10
+	end
+	return @SLLe
+end
+
+--Tạo hàm trả về đơn vị lẻ
+create or alter function fnDVLe(@MaHH varchar(4))
+returns nvarchar(10)
+as
+begin
+	set @MaHH = (select MaHang from HANG where MaHang = @MaHH)
+	declare @DVLe nvarchar(10)
+	--Nước suối
+	if @MaHH = 'HH01'
+	begin
+		set @DVLe = N'chai'
+	end
+	--Coca
+	else if @MaHH = 'HH02'
+	begin
+		set @DVLe = N'chai'
+	end
+	--Pepsi
+	else if @MaHH = 'HH03'
+	begin
+		set @DVLe = N'chai'
+	end
+	--Không độ
+	else if @MaHH = 'HH04'
+	begin
+		set @DVLe = N'chai'
+	end
+	--Sting
+	else if @MaHH = 'HH05'
+	begin
+		set @DVLe = N'chai'
+	end
+	--Trà túi lọc Phúc Long
+	else if @MaHH = 'HH06'
+	begin
+		set @DVLe = N'gói'
+	end
+	--Cà phê gói NESCAFÉ
+	else if @MaHH = 'HH07'
+	begin
+		set @DVLe = N'gói'
+	end
+	--Bia Tiger
+	else if @MaHH = 'HH08'
+	begin
+		set @DVLe = N'lon'
+	end
+	--Bánh snack Oishi
+	else if @MaHH = 'HH09'
+	begin
+		set @DVLe = N'gói'
+	end
+	--Thuốc lá
+	else if @MaHH = 'HH10'
+	begin
+		set @DVLe = N'cây'
+	end
+	--Sữa tắm Dove
+	else if @MaHH = 'HH11'
+	begin
+		set @DVLe = N'chai'
+	end
+	--Dầu gội
+	else if @MaHH = 'HH12'
+	begin
+		set @DVLe = N'chai'
+	end
+	--Quẹt ga
+	else if @MaHH = 'HH13'
+	begin
+		set @DVLe = N'cái'
+	end
+	--Giấy vệ sinh
+	else if @MaHH = 'HH14'
+	begin
+		set @DVLe = N'cuộn'
+	end
+	--Bộ chăn ga
+	else if @MaHH = 'HH15'
+	begin
+		set @DVLe = N'bộ'
+	end
+	--Khăn tắm
+	else if @MaHH = 'HH16'
+	begin
+		set @DVLe = N'cái'
+	end
+	--Kem đánh răng
+	else if @MaHH = 'HH17'
+	begin
+		set @DVLe = N'cái'
+	end
+	--Bàn chải đánh răng
+	else if @MaHH = 'HH18'
+	begin
+		set @DVLe = N'cái'
+	end
+	--Lược
+	else if @MaHH = 'HH19'
+	begin
+		set @DVLe = N'cái'
+	end
+	--Dép
+	else if @MaHH = 'HH20'
+	begin
+		set @DVLe = N'đôi'
+	end
+	--Cốc thủy tinh
+	else if @MaHH = 'HH21'
+	begin
+		set @DVLe = 'cái'
+	end
+	return @DVLe
+end
+
+--Tạo proc insert dữ liệu hóa đơn nhập (MaHDNhap, MaHang, SoLuongLe, DonVi, SoLuongSi, DonViTinh, DonGiaSi, ThanhTien) - Trinh 1: thành công | 0: khong thành công
+create or alter proc insertHDNhapCT(@MaHH varchar(4), @SLSi int, @DVTinh nvarchar(10), @DonGiaSi int, @ret bit output)
+as
+begin
+	set @ret = 1
+	declare @ThanhTien int = @SLSi * @DonGiaSi
+	declare @DVLe nvarchar(10) = (select DonViTinh from HANG where MaHang = @MaHH)
+	declare @newMaMoiHDN varchar(10) = (select dbo.fnNewMaMoiHDN())
+	if exists (select 1 from HANG where MaHang = @MaHH)
+	begin
+		insert into HDNHAPCHITIET
+		values (@newMaMoiHDN, @MaHH, dbo.fnSLLe(@MaHH,@SLSi), @DVLe, @SLSi, @DVTinh, @DonGiaSi, @ThanhTien)
+	end
+	else
+	if @@ROWCOUNT < 1
+	begin
+		set @ret = 0
+	end
+	print @ret
+end
+
+declare @ret bit
+exec insertHDNhapCT 'HH02', 1, N'thùng', 25000, @ret output
+
+-- Tạo trigger insert dữ liệu hóa đơn nhập
+create or alter trigger insertHDNhap
+on HDNHAPCHITIET 
+instead of insert
+as
+begin
+	declare @ThoiGian datetime = getdate()
+	declare @TongCong int = (select sum(ThanhTien) from inserted)
+	insert into HOADONNHAP(MaHDNhap, ThoiGian, TongCong)
+	values (dbo.fnNewMaMoiHDN(), @ThoiGian, @TongCong)
+
+	insert into HDNHAPCHITIET
+	select*from inserted
+end
+
+select*from HOADONNHAP
+select*from HDNHAPCHITIET
+
+delete from HOADONNHAP where MaHDNhap = 'HDN011'
+delete from HDNHAPCHITIET where MaHDNhap = 'HDN011'
